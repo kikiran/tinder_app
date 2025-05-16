@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import UserModel from "../models/userSchema.js";
+import JWTToken from "../utils/Authentication.js";
 
 export const register = async (req, res) => {
   const { name, email, password, confirmPassword } = req.body;
@@ -42,9 +43,14 @@ export const register = async (req, res) => {
 
     await newUser.save();
 
+    //Generate JWT token
+
+    const token = JWTToken(newUser._id);
+
     // 6. Respond with success
     res.status(201).json({
       success: true,
+      token,
       message: "User registered successfully",
     });
   } catch (error) {
@@ -71,7 +77,7 @@ export const login = async (req, res) => {
   try {
     const fetchUser = await UserModel.findOne({ email });
     if (!fetchUser) {
-      res.status(400).json({
+     return res.status(400).json({
         success: false,
         message: "Invalid Email",
       });
@@ -79,14 +85,17 @@ export const login = async (req, res) => {
 
     const passwordMatch = await bcrypt.compare(password, fetchUser.password);
     if (!passwordMatch) {
-      res.status(400).json({
+     return res.status(400).json({
         success: false,
         message: "Password not match",
       });
     }
 
+    //Verify Token
+    const token = JWTToken(fetchUser._id);
     return res.status(200).json({
       success: true,
+      token
     });
   } catch (error) {
     res.status(400).json({
