@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import UserModel from "../models/userSchema.js";
 import JWTToken from "../utils/Authentication.js";
+import cookie from 'cookie-parser';
 
 export const register = async (req, res) => {
   const { name, email, password, confirmPassword } = req.body;
@@ -48,7 +49,11 @@ export const register = async (req, res) => {
     const token = JWTToken(newUser._id);
 
     // 6. Respond with success
-    res.status(201).json({
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: process.env.TOKEN_EXPIRY
+    }).status(201).json({
       success: true,
       token,
       message: "User registered successfully",
@@ -93,10 +98,21 @@ export const login = async (req, res) => {
 
     //Verify Token
     const token = JWTToken(fetchUser._id);
-    return res.status(200).json({
-      success: true,
-      token
-    });
+    const isProduction = process.env.NODE_ENV === "production";
+
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? "Strict" : "Lax",
+        maxAge: process.env.TOKEN_EXPIRY,
+      })
+      .status(200)
+      .json({
+        success: true,
+        message: "Logged in successfully",
+        data: fetchUser
+      });
   } catch (error) {
     res.status(400).json({
       success: false,
@@ -104,3 +120,16 @@ export const login = async (req, res) => {
     });
   }
 };
+
+
+export const logout = async (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "Strict",
+  });
+  res.status(200).json({
+    success: true,
+    message: "Logged out",
+  });
+}

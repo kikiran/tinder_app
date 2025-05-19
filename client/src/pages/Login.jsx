@@ -1,10 +1,14 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router";
+const path = import.meta.env.VITE_BASE_PATH;
 
 const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+
+  let navigate = useNavigate();
 
   const handleFormChange = (e) => {
     const value = e.target.value;
@@ -14,9 +18,28 @@ const Login = () => {
     });
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    console.log("============", formData);
+    try {
+      const response = await fetch(`${path}/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+        credentials: 'include'
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        alert("Login failed");
+        return;
+      }
+      navigate("/");
+
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   return (
@@ -56,6 +79,9 @@ const Login = () => {
             <div className="card-actions justify-center pt-4">
               <button className="btn btn-primary">Sign In</button>
             </div>
+            <a className="link link-primary text-right" href="/register">
+              Register
+            </a>
           </form>
         </div>
       </div>

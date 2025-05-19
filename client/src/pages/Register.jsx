@@ -100,6 +100,9 @@ const Register = () => {
             <div className="card-actions justify-center pt-4">
               <button className="btn btn-primary">Sing Up</button>
             </div>
+            <a className="link link-primary text-right" href="/login">
+              Login
+            </a>
           </form>
         </div>
       </div>

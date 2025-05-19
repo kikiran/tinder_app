@@ -1,7 +1,28 @@
 import React from "react";
 import { Link } from "react-router-dom";
+const path = import.meta.env.VITE_BASE_PATH;
 
 const NavBar = () => {
+
+  const handleLogout = async () => {
+    try {
+      const response = await fetch(`${path}/logout`, {
+        method: 'POST',
+        credentials: "include"
+      })
+
+      if (!response.ok) {
+        alert("Logout failed!");
+        return;
+      }
+
+      window.location.href="/login"
+    } catch (error) {
+      console.log(error.message)
+    }
+  }
+
+
   return (
     <div className="navbar bg-base-100 shadow-sm">
       <div className="flex-1">
@@ -68,7 +89,7 @@ const NavBar = () => {
               <a>Settings</a>
             </li>
             <li>
-              <a>Logout</a>
+              <a onClick={handleLogout}>Logout</a>
             </li>
           </ul>
         </div>
