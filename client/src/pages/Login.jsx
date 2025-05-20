@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
+import { addUser } from "../store/slices/userSlice";
+
 const path = import.meta.env.VITE_BASE_PATH;
 
 const Login = () => {
@@ -7,8 +10,8 @@ const Login = () => {
     email: "",
     password: "",
   });
-
   let navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleFormChange = (e) => {
     const value = e.target.value;
@@ -27,7 +30,7 @@ const Login = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
-        credentials: 'include'
+        credentials: "include",
       });
 
       const data = await response.json();
@@ -35,8 +38,8 @@ const Login = () => {
         alert("Login failed");
         return;
       }
+      dispatch(addUser(data));
       navigate("/");
-
     } catch (error) {
       console.log(error.message);
     }
