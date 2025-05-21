@@ -34,7 +34,7 @@ const NavBar = () => {
       </div>
       {getUser && getUser?.length !== 0 ? (
         <div className="flex flex-row gap-4 items-center">
-          <div>{getUser?.data?.name}</div>
+          <div>Welcome {getUser?.data?.name}</div>
 
           <div className="dropdown dropdown-end">
             <div

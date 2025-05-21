@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import UserModel from "../models/userSchema.js";
-import JWTToken from "../utils/Authentication.js";
+import {JWTToken} from "../utils/Authentication.js";
 import cookie from 'cookie-parser';
 
 export const register = async (req, res) => {
@@ -132,4 +132,23 @@ export const logout = async (req, res) => {
     success: true,
     message: "Logged out",
   });
+}
+
+export const getUser = async (req, res) => {
+  const user = req.user;
+
+  try {
+    if (!user) {
+      res.status(400).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    res.status(200).json({ success: true, data: user });
+    
+  } catch (error) {
+    res.status(401).json({success: false, message: error.message})
+    console.log("Unauthroized user")
+  }
 }
