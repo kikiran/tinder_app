@@ -3,18 +3,23 @@ const Register = () => {
   const path = import.meta.env.VITE_BASE_PATH;
 
   const [formData, setFormData] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
     confirmPassword: "",
+    gender: "",
+    dob: "",
+    imageUpload:""
   });
 
   const handleFormChange = (e) => {
-    const value = e.target.value;
+    const { name, value, type, files } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: value,
+      [name]: type === "file" ? files[0] : value,
     });
+  
   };
 
   const handleFormSubmit = async (e) => {
@@ -47,16 +52,28 @@ const Register = () => {
             Register
           </h2>
           <form className="flex flex-col" onSubmit={(e) => handleFormSubmit(e)}>
-            <label className="form-label" htmlFor="name">
-              Name*
+            <label className="form-label" htmlFor="firstName">
+              First Name*
             </label>
             <input
               type="text"
               placeholder="Type here"
               className="input mt-2 mb-4"
-              name="name"
-              id="name"
-              value={formData.name}
+              name="firstName"
+              id="firstName"
+              value={formData.firstName}
+              onChange={handleFormChange}
+            />
+            <label className="form-label" htmlFor="lastName">
+              Last Name*
+            </label>
+            <input
+              type="text"
+              placeholder="Type here"
+              className="input mt-2 mb-4"
+              name="lastName"
+              id="lastName"
+              value={formData.lastName}
               onChange={handleFormChange}
             />
             <label className="form-label" htmlFor="email">
@@ -94,6 +111,72 @@ const Register = () => {
               name="confirmPassword"
               id="confirmPassword"
               value={formData.confirmPassword}
+              onChange={handleFormChange}
+            />
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Gender*
+              </label>
+              <div className="flex space-x-6">
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    name="gender"
+                    value="male"
+                    className="form-radio text-blue-600"
+                    onChange={handleFormChange}
+                    checked={formData.gender === "male"}
+                  />
+                  <span className="ml-2">Male</span>
+                </label>
+
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    name="gender"
+                    value="female"
+                    className="form-radio text-pink-500"
+                    onChange={handleFormChange}
+                    checked={formData.gender === "female"}
+                  />
+                  <span className="ml-2">Female</span>
+                </label>
+
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    name="gender"
+                    value="other"
+                    className="form-radio text-purple-500"
+                    onChange={handleFormChange}
+                    checked={formData.gender === "other"}
+                  />
+                  <span className="ml-2">Other</span>
+                </label>
+              </div>
+            </div>
+
+            <label className="form-label" htmlFor="dob">
+              Date Of Birth*
+            </label>
+            <input
+              type="date"
+              placeholder="Type here"
+              className="input mt-2 mb-4"
+              name="dob"
+              id="dob"
+              value={formData.dob}
+              onChange={handleFormChange}
+            />
+            <label className="form-label" htmlFor="password">
+              Upload Pic*
+            </label>
+            <input
+              type="file"
+              placeholder="Type here"
+              className="file-input mt-2 mb-4"
+              name="imageUpload"
+              id="imageUpload"
               onChange={handleFormChange}
             />
 

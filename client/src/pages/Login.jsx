@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { addUser } from "../store/slices/userSlice";
 
@@ -10,6 +10,7 @@ const Login = () => {
     email: "",
     password: "",
   });
+  const [error, setError] = useState("");
   let navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -35,12 +36,13 @@ const Login = () => {
 
       const data = await response.json();
       if (!response.ok) {
-        alert("Login failed");
+        setError("Invalid credentials");
         return;
       }
       dispatch(addUser(data));
       navigate("/");
     } catch (error) {
+      setError(error.message);
       console.log(error.message);
     }
   };
@@ -78,13 +80,13 @@ const Login = () => {
               value={formData.password}
               onChange={handleFormChange}
             />
-
+            <p className="text-red-400">{error && error}</p>
             <div className="card-actions justify-center pt-4">
               <button className="btn btn-primary">Sign In</button>
             </div>
-            <a className="link link-primary text-right" href="/register">
+            <Link className="link link-primary text-right" to="/register">
               Register
-            </a>
+            </Link>
           </form>
         </div>
       </div>

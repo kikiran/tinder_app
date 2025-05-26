@@ -1,29 +1,29 @@
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { removeUser } from "../store/slices/userSlice";
 const path = import.meta.env.VITE_BASE_PATH;
 
 const NavBar = () => {
-
   const getUser = useSelector((state) => state.user);
-  console.log("getuser", getUser)
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleLogout = async () => {
     try {
       const response = await fetch(`${path}/logout`, {
-        method: 'POST',
-        credentials: "include"
-      })
+        method: "POST",
+        credentials: "include",
+      });
 
       if (!response.ok) {
         alert("Logout failed!");
         return;
       }
-
-      window.location.href="/login"
+      dispatch(removeUser());
+      navigate("/login");
     } catch (error) {
-      console.log(error.message)
+      console.log(error.message);
     }
-  }
-
+  };
 
   return (
     <div className="navbar bg-base-100 shadow-sm">
